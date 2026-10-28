@@ -1,0 +1,12 @@
+01_foundations/01_command_model|01|What Tcl is: the command model|1
+01_foundations/02_variables|02|Variables: set and $|1
+01_foundations/03_basic_syntax|03|Basic syntax: quotes, braces, brackets, backslash|4
+02_calculations_and_decisions/04_expr_arithmetic|04|Arithmetic with expr|1
+02_calculations_and_decisions/05_logical_bitwise|05|Logical and bitwise operators|1
+02_calculations_and_decisions/06_conditionals|06|Conditionals: if, switch, ternary|1
+03_data_and_repetition/07_lists|07|Lists|2
+03_data_and_repetition/08_loops|08|Loops: for, while, foreach|2
+03_data_and_repetition/09_strings|09|String commands|3
+03_data_and_repetition/10_arrays|10|Arrays|3
+03_data_and_repetition/11_dictionaries|11|Dictionaries|1
+04_files_structure_system/12_file_handling|12|File handling|1

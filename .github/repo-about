@@ -1,0 +1,2 @@
+Tcl for design verification: lists, arrays, dicts, strings, expr and file handling on DV data, each file re-run in CI against its saved output
+design-verification tcl eda scripting regression-testing

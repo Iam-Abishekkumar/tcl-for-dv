@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+# push: publish your next exercises to GitHub (only to THIS folder's own repo).
+#
+#   ./push 2        publish the next 2 exercises
+#   ./push 3        publish the next 3 exercises
+#   ./push --next   show what comes next (publishes nothing)
+#
+# Waiting exercises live in queue/ (it is never uploaded). queue/ORDER is the order:
+# one line = one exercise (a script with its saved output; a few lines are a small group of scripts).
+
+set -euo pipefail
+ROOT=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)
+cd "$ROOT"
+EXT=tcl
+ORDER=queue/ORDER
+
+if [ -t 1 ]; then G=$'\e[32m'; R=$'\e[31m'; B=$'\e[1m'; N=$'\e[0m'; else G=; R=; B=; N=; fi
+die() { printf '%sERROR:%s %s\n' "$R" "$N" "$*" >&2; exit 1; }
+pending() { if [ -f "$ORDER" ]; then grep -v -e '^[[:space:]]*$' -e '^#' "$ORDER" || true; fi; }
+
+# ------------------------------------------------------------------ README tables
+describe() {  # file -> one-line description from its header
+  local d
+  d=$(sed -n '1,25s/^# Task: //p' "$1" | head -n 1)
+  [ -n "$d" ] || d=$(sed -n "1,25s/^# $(basename "$1"): //p" "$1" | head -n 1)
+  printf '%s' "$d"
+}
+
+make_readmes() {
+  local owner repo total waiting published rows="" path num title tot left done_n icon name
+  owner=$(git remote get-url origin 2>/dev/null | sed -n 's#.*github\.com[:/]\([^/]*\)/.*#\1#p' || true)
+  [ -n "$owner" ] || owner="Iam-Abishekkumar"
+  repo=$(basename "$ROOT")
+  waiting=$(pending | awk '{print $1}')
+  total=0
+  while IFS='|' read -r path num title tot; do
+    [ -n "$path" ] || continue
+    total=$((total + tot))
+    left=$(printf '%s\n' "$waiting" | grep -c "^$path/" || true)
+    done_n=$((tot - left))
+    if [ "$done_n" -eq "$tot" ]; then icon="✅"; elif [ "$done_n" -gt 0 ]; then icon="🟡"; else icon="⬜"; fi
+    if [ "$done_n" -gt 0 ]; then name="[$title]($path/)"; else name="$title"; fi
+    rows+="| $num | $name | $done_n / $tot | $icon |"$'\n'
+  done < .repo/topics.txt
+  published=$((total - $(pending | wc -l)))
+
+  local tpl
+  tpl=$(cat .repo/README.md.in)
+  tpl=${tpl//\{\{OWNER\}\}/$owner}
+  tpl=${tpl//\{\{REPO\}\}/$repo}
+  tpl=${tpl//\{\{PUBLISHED\}\}/$published}
+  tpl=${tpl//\{\{TOTAL\}\}/$total}
+  tpl=${tpl//\{\{TABLE\}\}/${rows%$'\n'}}
+  printf '%s\n' "$tpl" > README.md
+
+  # each published topic: a table of its exercises, in course order
+  local t f base out tbl
+  while IFS='|' read -r path num title tot; do
+    [ -f "$path/README.md" ] || continue
+    tbl="| Exercise | What it does | Output |"$'\n'"|---|---|---|"$'\n'
+    while read -r f; do
+      [ "$(dirname "$f")" = "$path" ] && [ -f "$f" ] || continue
+      base=$(basename "$f"); out="${base%.*}.out"
+      if [ -f "$path/$out" ]; then out="[$out]($out)"; else out="—"; fi
+      tbl+="| [\`$base\`]($base) | $(describe "$f") | $out |"$'\n'
+    done < .repo/all_files.txt
+    t=$(mktemp)
+    TBL="$tbl" awk '
+      /<!-- exercises -->/   { print; printf "%s", ENVIRON["TBL"]; skip = 1; next }
+      /<!-- \/exercises -->/ { skip = 0 }
+      !skip { print }' "$path/README.md" > "$t" && cat "$t" > "$path/README.md"
+    rm -f "$t"
+  done < .repo/topics.txt
+}
+
+case "${1:-}" in
+  --next)
+    n=$(pending | wc -l)
+    echo "$n exercises waiting. Next 5:"
+    pending | head -n 5 | nl -w2 -s'. '
+    exit 0 ;;
+  --readme) make_readmes; exit 0 ;;
+  ''|-h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+esac
+
+WANT=$1
+[[ "$WANT" =~ ^[0-9]+$ ]] && [ "$WANT" -ge 1 ] || die "give how many exercises to publish, for example:  ./push 2"
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git remote get-url origin >/dev/null 2>&1 \
+  || die "this folder is not on GitHub yet. First time only: bash push_to_github.sh <your-user> --repo $(basename "$ROOT")"
+[ -z "$(git status --porcelain)" ] || die "you have changes that are not committed yet. See them with:  git status"
+
+mapfile -t units < <(pending | head -n "$WANT")
+if [ ${#units[@]} -eq 0 ]; then
+  echo "Nothing left in the queue: every exercise is published."
+  echo "New exercise? Put it in queue/<section>/<topic>/, save its output with ./check.sh --update, and add its path to queue/ORDER."
+  exit 0
+fi
+
+cp "$ORDER" "$ORDER.bak"
+moved=(); new_files=(); labels=(); topics=()
+undo() {
+  local i
+  for (( i=${#moved[@]}-1; i>=0; i-- )); do mv "${moved[$i]}" "queue/${moved[$i]}"; done
+  mv "$ORDER.bak" "$ORDER"
+}
+for u in "${units[@]}"; do
+  first=""
+  for f in $u; do
+    [ -f "queue/$f" ] || { undo; die "queue/$f is missing (check queue/ORDER)"; }
+    topic=$(dirname "$f"); mkdir -p "$topic"
+    for g in "$f" "${f%.*}.out" "$topic/README.md"; do
+      if [ -f "queue/$g" ] && [ ! -e "$g" ]; then mv "queue/$g" "$g"; moved+=("$g"); fi
+    done
+    new_files+=("$f")
+    [ -n "$first" ] || first=$(basename "$f")
+  done
+  [ "$(echo $u | wc -w)" -gt 1 ] && first="$first (+$(( $(echo $u | wc -w) - 1 )) helper)"
+  labels+=("$first"); topics+=("$(basename "$(dirname "${u%% *}")")")
+done
+awk -v n="${#units[@]}" '/^[[:space:]]*$/ || /^#/ { print; next } c < n { c++; next } { print }' "$ORDER.bak" > "$ORDER"
+
+echo "${B}Checking the new exercises (the same check GitHub runs):${N}"
+if ! ./check.sh "${new_files[@]}"; then
+  undo
+  die "a check failed, so nothing was published or pushed."
+fi
+rm -f "$ORDER.bak"
+make_readmes
+
+uniq_topics=$(printf '%s\n' "${topics[@]}" | sort -u)
+if [ "$(printf '%s\n' "$uniq_topics" | wc -l)" -eq 1 ]; then
+  msg="Add ${topics[0]}: $(IFS=,; echo "${labels[*]}" | sed 's/,/, /g')"
+else
+  parts=(); for i in "${!labels[@]}"; do parts+=("${labels[$i]} [${topics[$i]}]"); done
+  msg="Add $(IFS=,; echo "${parts[*]}" | sed 's/,/, /g')"
+fi
+git add -A
+git commit -q -m "$msg"
+echo "Committed: $msg"
+if git push -q; then
+  left=$(pending | wc -l)
+  printf '%sPushed %d exercise(s) to %s%s · %d left in the queue\n' "$G" "${#units[@]}" "$(git remote get-url origin)" "$N" "$left"
+else
+  echo "${R}The commit is saved on your computer, but the push failed.${N}"
+  echo "If GitHub has changes you don't have:  git pull --rebase  and then  git push"
+  exit 1
+fi

@@ -1,0 +1,7 @@
+# exercises waiting to be published (never uploaded)
+queue/
+*.swp
+# files the exercises create when run in place
+sim.log
+summary.txt
+names.txt

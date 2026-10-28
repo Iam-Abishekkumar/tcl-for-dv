@@ -1,0 +1,50 @@
+# Tcl for Design Verification
+
+[![check](https://github.com/{{OWNER}}/{{REPO}}/actions/workflows/check.yml/badge.svg)](https://github.com/{{OWNER}}/{{REPO}}/actions/workflows/check.yml)
+
+Tcl exercises I wrote while learning Tcl for design verification. Tcl is the command language inside most EDA tools
+(Questa/ModelSim, VCS UCLI, Xcelium, Design Compiler, PrimeTime, Genus, Vivado), so these exercises use DV data:
+test lists, seeds, register values, UVM log lines and regression summaries.
+**Every file is run with tclsh on each push and compared with its saved real output.**
+
+**Published: {{PUBLISHED}} of {{TOTAL}} exercises**
+
+## Topics
+
+| # | Topic | Exercises | Status |
+|---|---|---|---|
+{{TABLE}}
+
+## How each file is checked
+
+```text
+ exNN_name.tcl   ──►  check.sh runs: tclsh exNN_name.tcl  ──►  compares with exNN_name.out  ──►  PASS / FAIL
+```
+
+Each file starts with its task and its expected output as comments. GitHub Actions installs Tcl and runs `./check.sh` on every push.
+
+```bash
+sudo apt install tcl
+git clone https://github.com/{{OWNER}}/{{REPO}}.git
+cd {{REPO}}
+./check.sh
+```
+
+## About these exercises
+
+These are my exercises from a Tcl course, written while learning. Before publishing, I reviewed them and cleaned small things
+(output text matching the expected output, `default` in `switch`, indentation); the mistakes I made along the way are in my notes.
+Next topics: procedures, namespaces, `exec`, `regexp`, `catch`, `glob`, then three DV projects (log scanner, regression summarizer, test-list processor).
+
+## Layout
+
+```text
+NN_section/NN_topic/
+├── README.md          what the topic is and the key rules
+├── exNN_name.tcl      my exercise (task and expected output at the top)
+└── exNN_name.out      its real output
+check.sh               runs every file and compares with its .out
+push                   publishes my next exercises: ./push 2
+```
+
+Requirements: Tcl 8.6 (`tclsh`).
