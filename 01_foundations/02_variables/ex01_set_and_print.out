@@ -1,0 +1,7 @@
+$ tclsh ex01_set_and_print.tcl
+fifo_test seed=42 status=PASS
+fifo_test seed=42 status=FAIL
+can't read "abc": no such variable
+    while executing
+"puts $abc"
+    (file "ex01_set_and_print.tcl" line 14)

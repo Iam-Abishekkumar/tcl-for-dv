@@ -7,14 +7,14 @@ Tcl exercises I wrote while learning Tcl for design verification. Tcl is the com
 test lists, seeds, register values, UVM log lines and regression summaries.
 **Every file is run with tclsh on each push and compared with its saved real output.**
 
-**Published: 1 of 21 exercises**
+**Published: 2 of 21 exercises**
 
 ## Topics
 
 | # | Topic | Exercises | Status |
 |---|---|---|---|
 | 01 | [What Tcl is: the command model](01_foundations/01_command_model/) | 1 / 1 | ✅ |
-| 02 | Variables: set and $ | 0 / 1 | ⬜ |
+| 02 | [Variables: set and $](01_foundations/02_variables/) | 1 / 1 | ✅ |
 | 03 | Basic syntax: quotes, braces, brackets, backslash | 0 / 4 | ⬜ |
 | 04 | Arithmetic with expr | 0 / 1 | ⬜ |
 | 05 | Logical and bitwise operators | 0 / 1 | ⬜ |
