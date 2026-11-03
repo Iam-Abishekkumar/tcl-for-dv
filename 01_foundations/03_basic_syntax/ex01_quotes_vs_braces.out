@@ -1,0 +1,3 @@
+$ tclsh ex01_quotes_vs_braces.tcl
+Test: fifo_test
+Test: $test_name
