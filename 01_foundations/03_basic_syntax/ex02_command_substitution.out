@@ -1,0 +1,3 @@
+$ tclsh ex02_command_substitution.tcl
+5
+Name uart_test has 9 characters
