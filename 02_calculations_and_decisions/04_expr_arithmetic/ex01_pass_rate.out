@@ -1,0 +1,5 @@
+$ tclsh ex01_pass_rate.tcl
+total=10
+failed=2
+pass rate=80.0%
+avg per test=2.5
