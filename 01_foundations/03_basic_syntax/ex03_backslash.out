@@ -1,0 +1,4 @@
+$ tclsh ex03_backslash.tcl
+Cost: $50
+[PASS] fifo_test
+name	status
