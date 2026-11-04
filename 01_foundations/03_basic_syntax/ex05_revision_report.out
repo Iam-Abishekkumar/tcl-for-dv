@@ -1,0 +1,4 @@
+$ tclsh ex05_revision_report.tcl
+[PASS] uart_test (9 chars)
+log file: uart_test_seed42.log
+Usage: run_test $test_name
