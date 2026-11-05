@@ -1,0 +1,7 @@
+$ tclsh ex01_register_bits.tcl
+bit2=1
+upper nibble=11
+lower nibble=6
+set bit0=183
+clear bit1=180
+bit7 and bit0 both set=0
