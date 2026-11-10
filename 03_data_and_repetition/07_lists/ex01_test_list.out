@@ -1,0 +1,8 @@
+$ tclsh ex01_test_list.tcl
+tests: fifo_test uart_test spi_test
+count: 3
+after append: fifo_test uart_test spi_test i2c_test
+sorted: fifo_test i2c_test spi_test uart_test
+second test: i2c_test
+without first: i2c_test spi_test uart_test
+from csv: 3 elements, last is c
