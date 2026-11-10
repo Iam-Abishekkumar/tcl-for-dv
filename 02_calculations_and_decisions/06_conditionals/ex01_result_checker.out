@@ -1,0 +1,4 @@
+$ tclsh ex01_result_checker.tcl
+RESULT: FAIL (2 errors)
+action: debug the failure
+seed type: odd
