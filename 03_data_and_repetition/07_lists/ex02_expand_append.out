@@ -1,0 +1,5 @@
+$ tclsh ex02_expand_append.tcl
+5
+dma_test
+4
+fifo_test uart_test spi_test {i2c_test dma_test}
