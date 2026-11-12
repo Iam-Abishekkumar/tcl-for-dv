@@ -1,0 +1,8 @@
+$ tclsh ex01_regression_loop.tcl
+running fifo_test
+running uart_test
+running spi_test
+running i2c_test
+pass=3 fail=1
+first failure: spi_test
+squares: 1 4 9 16 25
