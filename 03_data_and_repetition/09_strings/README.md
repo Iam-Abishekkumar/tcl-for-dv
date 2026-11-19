@@ -9,4 +9,5 @@ Positions start at 0.
 | Exercise | What it does | Output |
 |---|---|---|
 | [`ex01_log_line.tcl`](ex01_log_line.tcl) | inspect a log line with string commands | [ex01_log_line.out](ex01_log_line.out) |
+| [`ex02_signal_name.tcl`](ex02_signal_name.tcl) | inspect a hierarchical signal name | [ex02_signal_name.out](ex02_signal_name.out) |
 <!-- /exercises -->

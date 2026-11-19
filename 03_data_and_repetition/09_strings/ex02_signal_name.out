@@ -1,0 +1,5 @@
+$ tclsh ex02_signal_name.tcl
+length: 18
+last char: n
+module: fifo
+upper: TOP.DUT.FIFO.WR_EN
