@@ -7,7 +7,7 @@ Tcl exercises I wrote while learning Tcl for design verification. Tcl is the com
 test lists, seeds, register values, UVM log lines and regression summaries.
 **Every file is run with tclsh on each push and compared with its saved real output.**
 
-**Published: 13 of 21 exercises**
+**Published: 14 of 21 exercises**
 
 ## Topics
 
@@ -21,7 +21,7 @@ test lists, seeds, register values, UVM log lines and regression summaries.
 | 06 | [Conditionals: if, switch, ternary](02_calculations_and_decisions/06_conditionals/) | 1 / 1 | ✅ |
 | 07 | [Lists](03_data_and_repetition/07_lists/) | 2 / 2 | ✅ |
 | 08 | [Loops: for, while, foreach](03_data_and_repetition/08_loops/) | 2 / 2 | ✅ |
-| 09 | String commands | 0 / 3 | ⬜ |
+| 09 | [String commands](03_data_and_repetition/09_strings/) | 1 / 3 | 🟡 |
 | 10 | Arrays | 0 / 3 | ⬜ |
 | 11 | Dictionaries | 0 / 1 | ⬜ |
 | 12 | File handling | 0 / 1 | ⬜ |

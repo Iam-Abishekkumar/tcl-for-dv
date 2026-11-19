@@ -1,0 +1,7 @@
+$ tclsh ex01_log_line.tcl
+length: 39
+severity: UVM_FATAL
+message: fifo overflow detected
+is fatal: 1
+lower: uvm_fatal @ 500: fifo overflow detected
+cleaned: UVM_FATAL_@_500:_fifo_overflow_detected
