@@ -1,0 +1,9 @@
+$ tclsh ex01_regression_table.tcl
+total: 4
+fifo_test: PASS
+i2c_test: PASS
+spi_test: FAIL
+uart_test: PASS
+pass=3 fail=1
+dma_test: not run
+after delete: 3
